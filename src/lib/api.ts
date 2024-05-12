@@ -1,7 +1,7 @@
 import axios from "axios";
 import { parseCookies } from "nookies";
 
-const urlBase = "to set"
+const urlBase = "http://127.0.0.1:8000/api/"
 
 const { 'rectool.token': token } = parseCookies()
 
@@ -12,19 +12,19 @@ const config = {
   },
 };
 
-export async function createClient(nome: string, cpf: string, enderecoDTO: string[]) {
+export async function createClient(id:number, nome: string, cpf: string, logradouro: string, numero: string, estado: string, cidade: string, cep: string) {
   const response = await api.post('/cliente/create', {
+    id: `${id}`,
     nome: nome,
     cpf: cpf,
-    enderecoDTO: {
-      "logradouro": enderecoDTO[0],
-      "numero": enderecoDTO[1],
-      "estado": enderecoDTO[2],
-      "cidade": enderecoDTO[3],
-      "cep": enderecoDTO[4]
-    },
+    logradouro: logradouro,
+    numero: numero,
+    estado: estado,
+    cidade: cidade,
+    cep: cep,
   });
-    return response;
+
+  return response;
 }
 
 export async function getClientInfo(id: string) {
@@ -32,33 +32,34 @@ export async function getClientInfo(id: string) {
   return response.data;
 }
 
-//A fazer ainda//
-export async function getClientList(filtro:string) {
+export async function getClientList() {
   try {
-    if(filtro==""){
-      const response = await api.post('/redemption/all', [], {
-        headers: config.headers,
-      })
-      return response.data;
-    }
-    else{
-      const response = await api.post('/redemption/all', [filtro], {
-        headers: config.headers,
-      })
-      return response.data;
-    }
+    const response = await api.get('/clientes', {});
+    return response.data;
   } 
   catch (error) {
     return false
   }
 }
 
-export async function updateClient(id:string) {
+export async function updateClient(id:number, nome: string, cpf: string, logradouro: string, numero: string, estado: string, cidade: string, cep: string) {
+  const response = await api.put('/cliente/update', {
+    id: `${id}`,
+    nome: nome,
+    cpf: cpf,
+    logradouro: logradouro,
+    numero: numero,
+    estado: estado,
+    cidade: cidade,
+    cep: cep,
+  });
+    return response;
+}
+
+export async function deleteClient(id: number) {
   const response = await api.delete('/cliente/'+id, {});
   return response.data;
 }
-
-//////////////////
 
 export const api = axios.create({
   baseURL: urlBase
