@@ -8,18 +8,17 @@ import { COLORS } from '../../src/lib/AppStyles'
 
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import CreateOutlinedIcon from '@mui/icons-material/CreateOutlined';
+import { createClient, deleteClient, getClientList, updateClient } from "@/lib/api";
 
 interface Clients {
   id: number;
   nome: string;
   cpf: string;
-  enderecoDTO: {
-    logradouro: string;
-    numero: number;
-    estado: string;
-    cidade: string;
-    cep: string;
-  };
+  logradouro: string;
+  numero: number;
+  estado: string;
+  cidade: string;
+  cep: string;
 }
 
 export function DashClientes(){
@@ -27,9 +26,8 @@ export function DashClientes(){
   const [clients, setClients] = useState<Clients[]>([])
 
   const [newForm, setNewForm] = useState(0)
-  const [delUserID, setDelUserID] = useState(0)
-  const [editUserID, setEditUserID] = useState(0)
 
+  const [idToEdit, setIDToEdit] = useState(-1);
   const [nome, setNome] = useState('')
   const [cpf, setCPF] = useState('')
   const [logradouro, setLogradouro] = useState('')
@@ -39,61 +37,38 @@ export function DashClientes(){
   const [cep, setCEP] = useState('')
 
   useEffect(() => {
-    setClients([
-      {
-        id: 0,
-        nome: "Carlos Medeira Pinheiros",
-        cpf: "70516895548",
-        enderecoDTO: {
-          logradouro: "rua Bisco Cardoso Aires",
-          numero: 99,
-          estado: "PE",
-          cidade: "cidade",
-          cep: "55299-497",
-        },
-      },
-      {
-        id: 1,
-        nome: "teste2",
-        cpf: "999899",
-        enderecoDTO: {
-          logradouro: "rua..",
-          numero: 99,
-          estado: "PE",
-          cidade: "cidade",
-          cep: "55299-497",
-        },
-      },
-    ]);
+    const fetchData = async () => {
+      try {
+        const clientList = await getClientList();
+        if (clientList) {
+          const formattedClients = clientList.map((client: Clients) => ({
+            id: client.id,
+            nome: client.nome,
+            cpf: client.cpf,
+            logradouro: client.logradouro,
+            numero: client.numero,
+            estado: client.estado,
+            cidade: client.cidade,
+            cep: client.cep
+          }));
+          
+          setClients(formattedClients);
+        }
+      } catch (error) {
+        console.error('Error fetching client list:', error);
+      }
+    };
+  
+    fetchData();
   }, []);
 
   function tabChange(tab:number){
-    setNome('')
-    setCPF('')
-    setLogradouro('')
-    setNumero('')
-    setEstado('')
-    setCidade('')
-    setCEP('')
-
+    resetInfo()
     setNewForm(tab)
   }
 
-  function editClient(id: number) {
-    const clientToEdit = clients.find(client => client.id === id);
-  
-    if (clientToEdit) {
-      setNome(clientToEdit.nome);
-      setCPF(clientToEdit.cpf);
-      setLogradouro(clientToEdit.enderecoDTO.logradouro);
-      setNumero(clientToEdit.enderecoDTO.numero.toString());
-      setEstado(clientToEdit.enderecoDTO.estado);
-      setCidade(clientToEdit.enderecoDTO.cidade);
-      setCEP(clientToEdit.enderecoDTO.cep);
-    }
-  }
-
-  function dellID(id:number){
+  function resetInfo(){
+    setIDToEdit(-1)
     setNome('')
     setCPF('')
     setLogradouro('')
@@ -101,6 +76,83 @@ export function DashClientes(){
     setEstado('')
     setCidade('')
     setCEP('')
+  }
+
+  async function handleCreateClient(nome: string, cpf: string, logradouro: string, numero: string, estado: string, cidade: string, cep: string) {
+    try {
+      const id = Date.now() * Math.floor(Math.random() * 1000000);
+      const newClient: Clients = {
+        id: id,
+        nome: nome,
+        cpf: cpf,
+        logradouro: logradouro,
+        numero: parseInt(numero), // Convert string to number
+        estado: estado,
+        cidade: cidade,
+        cep: cep
+      };
+  
+      await createClient(id, nome, cpf, logradouro, numero, estado, cidade, cep);
+      setClients(prevClients => [...prevClients, newClient]);
+    } catch (error) {
+      console.error('Error creating client:', error);
+    }    
+  }
+  
+
+  async function handleEditClient(id: number, nome: string, cpf: string, logradouro: string, numero: string, estado: string, cidade: string, cep: string) {
+    try {
+      const updatedClients = clients.map(client => {
+        if (client.id === id) {
+          return {
+            id: id,
+            nome: nome,
+            cpf: cpf,
+            logradouro: logradouro,
+            numero: parseInt(numero), // Convert string to number
+            estado: estado,
+            cidade: cidade,
+            cep: cep
+          };
+        } else {
+          return client;
+        }
+      });
+      setClients(updatedClients);
+      await updateClient(id, nome, cpf, logradouro, numero, estado, cidade, cep);
+      resetInfo();
+    } catch (error) {
+      console.error('Error updating client:', error);
+    }  
+  }
+  
+  
+  function editClient(id: number) {
+    const clientToEdit = clients.find(client => client.id === id);
+    setIDToEdit(id)
+    if (clientToEdit) {
+      setNome(clientToEdit.nome);
+      setCPF(clientToEdit.cpf);
+      setLogradouro(clientToEdit.logradouro);
+      setNumero(clientToEdit.numero.toString());
+      setEstado(clientToEdit.estado);
+      setCidade(clientToEdit.cidade);
+      setCEP(clientToEdit.cep);
+    }
+  }
+
+  async function dellID(id:number){
+
+    if (confirm(`Deseja apagar o usuario?`) == true) {
+      try {
+        await deleteClient(id);
+        setClients(prevClients => prevClients.filter(client => client.id !== id));
+        }
+      catch (error) {
+        console.error('Error deleting client:', error);
+      }
+      alert("Usuário remodivo!");
+    } 
   }
 
   return(
@@ -126,12 +178,12 @@ export function DashClientes(){
                       
                       </div>
                       <p><span className="font-semibold text-base">CPF:</span> {clients.cpf}</p>
-                      <p><span className="font-semibold text-base">Endereço:</span> {clients.enderecoDTO.logradouro}</p>
+                      <p><span className="font-semibold text-base">Endereço:</span> {clients.logradouro}</p>
                       <div className="grid grid-cols-2 gap-y-2 text-base">
-                        <p><span className="font-semibold">Numero:</span> {clients.enderecoDTO.numero}</p>
-                        <p><span className="font-semibold">CEP:</span> {clients.enderecoDTO.cep}</p>
-                        <p><span className="font-semibold">Cidade:</span> {clients.enderecoDTO.cidade}</p>
-                        <p><span className="font-semibold">Estado:</span> {clients.enderecoDTO.estado}</p>
+                        <p><span className="font-semibold">Numero:</span> {clients.numero}</p>
+                        <p><span className="font-semibold">CEP:</span> {clients.cep}</p>
+                        <p><span className="font-semibold">Cidade:</span> {clients.cidade}</p>
+                        <p><span className="font-semibold">Estado:</span> {clients.estado}</p>
                       </div>
                   </div>
               ))}
@@ -151,7 +203,19 @@ export function DashClientes(){
               </div>
 
               <div>
-              <form className="flex flex-col justify-start w-full mt-6 mb-4">
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  if(newForm==0){
+                    handleCreateClient(nome, cpf, logradouro, numero, estado, cidade, cep);
+                  }
+
+                  if(newForm==1){
+                    handleEditClient(idToEdit, nome, cpf, logradouro, numero, estado, cidade, cep);
+                  }
+                }}
+                className="flex flex-col justify-start w-full mt-6 mb-4"
+              >
                 <label htmlFor="userName" className={`text-generic-fields font-bold`}>Nome</label>
                 <div className="relative mt-2 mb-8 w-full">
                   <input className={`focus:ring-0 focus:border-1 focus:outline-none appearance-none leading-tight focus:border-white placeholder:text-generic-fields placeholder:font-semibold w-full border-none outline-none rounded-xl py-[1em] pl-[2em] pr-[4em] text-sm bg-generic-bgLight shadow-input hover:shadow-input-hover-focus focus:shadow-input-hover-focus`} 
@@ -215,12 +279,25 @@ export function DashClientes(){
                             required/>
                 </div>
 
-                <button 
-                  title="Cadastrar"
-                  type="submit" 
-                  className={`leading-none w-full border-none outline-none rounded-xl bg-generic-tittleButton p-4 text-generic-bgLight font-bold cursor-pointer mb-6 shadow-button hover:shadow-button-hover-focus focus:shadow-button-hover-focus`}>
-                  Cadastrar
-                </button>
+                {newForm === 0 && (
+                  <button 
+                    title="Cadastrar"
+                    type="submit" 
+                    className={`leading-none w-full border-none outline-none rounded-xl bg-generic-tittleButton p-4 text-generic-bgLight font-bold cursor-pointer mb-6 shadow-button hover:shadow-button-hover-focus focus:shadow-button-hover-focus`}
+                  >
+                    Cadastrar
+                  </button>
+                )}
+
+                {newForm === 1 && (
+                  <button 
+                    title="Editar"
+                    type="submit" 
+                    className={`leading-none w-full border-none outline-none rounded-xl bg-generic-tittleButton p-4 text-generic-bgLight font-bold cursor-pointer mb-6 shadow-button hover:shadow-button-hover-focus focus:shadow-button-hover-focus`}
+                  >
+                    Editar
+                  </button>
+                )}
               </form>
             </div>
                
