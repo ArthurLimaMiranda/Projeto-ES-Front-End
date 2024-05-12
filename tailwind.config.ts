@@ -75,7 +75,7 @@ const config: Config = {
       boxShadow: {
         'button': `-5px -5px 5px ${COLORS.lighter}, 5px 5px 5px ${COLORS.darker+'66'}`,
         'button-hover-focus': `inset -5px -5px 5px ${COLORS.lighter+'66'}, inset 5px 5px 5px ${COLORS.darker+'66'}`,
-        'input': `-5px -5px 5px ${COLORS.lighter}, 5px 5px 5px ${COLORS.darker+'1A'}`,
+        'input': `-3px -3px 3px ${COLORS.lighter}, 4px 4px 4px ${COLORS.darker+'1A'}`,
         'input-hover-focus': `inset -5px -5px 5px ${COLORS.lighter}, inset 5px 5px 5px ${COLORS.darker+'1A'}`
       }
       
