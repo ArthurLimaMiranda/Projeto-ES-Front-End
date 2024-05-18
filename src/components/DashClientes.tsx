@@ -3,7 +3,8 @@ import { Header } from "./Header";
 
 import { useEffect, useState } from "react";
 import React from 'react';
-
+import background from '../assets/bg2.jpg';
+import Image from 'next/image';
 import { COLORS } from '../../src/lib/AppStyles'
 
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
@@ -156,12 +157,11 @@ export function DashClientes(){
   }
 
   return(
-
+    <div className='relative h-screen'>
       <div className={`bg-[${COLORS.bgDark}] h-[100vh] py-24`}>
         <Header/>
-
+        
         <div className="mx-11 h-full flex flex-row justify-between gap-x-10">
-
           <div 
             className="grid grid-cols-2 gap-8 rounded-xl w-[80%] p-10 overflow-y-scroll"
             style={{
@@ -194,9 +194,9 @@ export function DashClientes(){
               boxShadow: '5px 5px 5px rgba(0, 0, 0, 0.4), -5px -5px 5px rgba(255, 255, 255, 0.5)',
               transition: 'opacity 0.3s ease-in-out',
             }}>
+
             <h1 className="font-bold border-b border-b-gray-100 flex flex-row w-full justify-center py-3 text-xl">{(newForm==0)?("Novo usuário"):("Editar usuário")}</h1>
             <div className="flex flex-col items-center w-full overflow-y-scroll">
-
               <div className="flex flex-row w-full justify-between">
                 <button className={`hover:bg-gray-100 w-full text-base py-2 ${newForm==0&&('bg-gray-100')}`} onClick={()=>tabChange(0)}>Adicionar</button>
                 <button className={`hover:bg-gray-100 w-full text-base py-2 ${newForm==1&&('bg-gray-100')}`} onClick={()=>tabChange(1)}>Editar</button>
@@ -312,5 +312,5 @@ export function DashClientes(){
 
         </div>
       </div>
-
+    </div>
   )}
