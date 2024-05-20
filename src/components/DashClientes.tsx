@@ -10,6 +10,7 @@ import { COLORS } from '../../src/lib/AppStyles'
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import CreateOutlinedIcon from '@mui/icons-material/CreateOutlined';
 import { createClient, deleteClient, getClientList, updateClient } from "@/lib/api";
+import { useRouter } from "next/navigation";
 
 interface Clients {
   id: number;
@@ -23,6 +24,7 @@ interface Clients {
 }
 
 export function DashClientes(){
+  const router = useRouter()
 
   const [clients, setClients] = useState<Clients[]>([])
 
@@ -38,30 +40,41 @@ export function DashClientes(){
   const [cep, setCEP] = useState('')
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const clientList = await getClientList();
-        if (clientList) {
-          const formattedClients = clientList.map((client: Clients) => ({
-            id: client.id,
-            nome: client.nome,
-            cpf: client.cpf,
-            logradouro: client.logradouro,
-            numero: client.numero,
-            estado: client.estado,
-            cidade: client.cidade,
-            cep: client.cep
-          }));
-          
-          setClients(formattedClients);
+    const isAuthenticated = localStorage.getItem('token'); 
+
+    if (!isAuthenticated) {
+      router.push('/login');
+    } else {
+      const fetchData = async () => {
+        try {
+          const clientList = await getClientList();
+          if (clientList) {
+            const formattedClients = clientList.map((client: Clients) => ({
+              id: client.id,
+              nome: client.nome,
+              cpf: client.cpf,
+              logradouro: client.logradouro,
+              numero: client.numero,
+              estado: client.estado,
+              cidade: client.cidade,
+              cep: client.cep
+            }));
+            
+            setClients(formattedClients);
+          }
+        } catch (error) {
+          console.error('Error fetching client list:', error);
         }
-      } catch (error) {
-        console.error('Error fetching client list:', error);
-      }
-    };
-  
+      };
     fetchData();
+    }
   }, []);
+
+  function handleLogout() {
+    localStorage.removeItem('token');
+    router.push('/login');
+  }
+
 
   function tabChange(tab:number){
     resetInfo()
@@ -298,6 +311,13 @@ export function DashClientes(){
                     Editar
                   </button>
                 )}
+
+                  <button 
+                    className={`leading-none w-full border-none outline-none rounded-xl bg-generic-tittleButton p-4 text-generic-bgLight font-bold cursor-pointer mb-6 shadow-button hover:shadow-button-hover-focus focus:shadow-button-hover-focus`}
+                    onClick={() => handleLogout()}
+                  >
+                    Sair
+                  </button>
               </form>
             </div>
             </div>

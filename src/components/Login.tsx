@@ -6,25 +6,35 @@ import { Header } from "./Header";
 import {MdOutlineEmail} from 'react-icons/md'
 import {AiOutlineLock} from 'react-icons/ai';
 import { loginUser } from '@/lib/api';
-import { useRouter } from 'next/router'; // Importe o useRouter aqui
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+
+function generateRandomToken() {
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let token = '';
+  for (let i = 0; i < 25; i++) {
+    const randomIndex = Math.floor(Math.random() * characters.length);
+    token += characters[randomIndex];
+  }
+  return token;
+}
 
 export function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
+  const router = useRouter()
+  
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    const router = useRouter();
     try {
       const success = await loginUser(email, password);
-      if (success) {
-        console.log('Login bem-sucedido');
-        if (router) {
-          router.push('/dashclients'); 
-        }
+      if (success == true) {
+        const token = generateRandomToken();
+        localStorage.setItem('token', token);
+        router.push('/dashclientes'); 
       } else {
-        console.error('Login falhou');
+        alert("Credencial inválida!")
       }
     } catch (error) {
       console.error('Erro ao fazer login:', error);

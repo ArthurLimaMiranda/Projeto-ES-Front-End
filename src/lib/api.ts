@@ -90,7 +90,9 @@ export async function loginUser(email: string, password: string) {
     email: email,
     password: password,
   });
-  return response
+  if (response){
+    return true
+  }
 }
 
 export const api = axios.create({

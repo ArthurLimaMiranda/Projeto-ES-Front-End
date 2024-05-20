@@ -1,5 +1,5 @@
 import { DashClientes } from "@/components/DashClientes";
 
-export default function DashClientsPage() {
+export default function DashClientesPage() {
   return <DashClientes />;
 }
