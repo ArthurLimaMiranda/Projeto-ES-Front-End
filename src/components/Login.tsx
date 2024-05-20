@@ -68,7 +68,7 @@ export function Login() {
                             <label htmlFor='' className='text-white'>Lembre-se de mim</label>
                         </div>
                         <div className="mt-4 ">
-                            <span className='text-white'>Novo aqui? <a className='hover:text-white hover:underline font-bold' href='register'><Link href={'/cadastro'} >Crie uma conta</Link></a></span>
+                            <span className='text-white'>Novo aqui?<Link className='hover:text-white hover:underline font-bold' href={'/cadastro'}> Crie uma conta</Link></span>
                         </div>
                     </form>
                 </div>

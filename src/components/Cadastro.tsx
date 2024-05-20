@@ -57,7 +57,7 @@ export function Cadastro() {
         </div>
             <button type="submit" className='w-full mb-4 text-[18px] mt-6 rounded-full border-4 border-[#4BC3B7] px-4 bg-transparent text-white hover:bg-[#F5F5F5] hover:border-[#F5F5F5] hover:text-[#03494E] py-2 transition-colors duration-300'>Criar conta</button>
                 <div className="mt-4 ">
-                    <span className='text-white'>Já tem uma conta? <a className='hover:text-white hover:underline font-bold' href='register'><Link href={'/login'} >Faça o Login</Link></a></span>
+                    <span className='text-white'>Já tem uma conta?<Link href={'/login'} className='hover:text-white hover:underline font-bold'> Faça o Login</Link></span>
                 </div>
             </form>
         </div>
