@@ -1,8 +1,6 @@
-import { DashClientes } from '@/components/DashClientes';
-import {Login} from '@/components/Login';
+import { redirect } from 'next/navigation';
 
-  export default async function Dashboard() {
-    return(
-      <Login/>
-    )
+export default function Home() {
+  redirect('/login');
+  return null; 
 }

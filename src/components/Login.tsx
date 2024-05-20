@@ -6,24 +6,30 @@ import { Header } from "./Header";
 import {BiUser} from 'react-icons/bi';
 import {AiOutlineLock} from 'react-icons/ai';
 import { loginUser } from '@/lib/api';
+import { useRouter } from 'next/router'; // Importe o useRouter aqui
+import Link from 'next/link';
 
 export function Login() {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
-    const handleSubmit = async (event: React.FormEvent) => {
-        event.preventDefault();
-        try {
-            const success = await loginUser(email, password); 
-            if (success) {
-                console.log('Login bem-sucedido');
-            } else {
-                console.error('Login falhou');
-            }
-        } catch (error) {
-            console.error('Erro ao fazer login:', error);
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    const router = useRouter();
+    try {
+      const success = await loginUser(email, password);
+      if (success) {
+        console.log('Login bem-sucedido');
+        if (router) {
+          router.push('/dashclients'); 
         }
+      } else {
+        console.error('Login falhou');
+      }
+    } catch (error) {
+      console.error('Erro ao fazer login:', error);
     }
+  };
 
     return (
         <div className='relative h-screen '>
@@ -62,7 +68,7 @@ export function Login() {
                             <label htmlFor='' className='text-white'>Lembre-se de mim</label>
                         </div>
                         <div className="mt-4 ">
-                            <span className='text-white'>Novo aqui? <a className='hover:text-white hover:underline font-bold' href='register'>Crie uma conta</a></span>
+                            <span className='text-white'>Novo aqui? <a className='hover:text-white hover:underline font-bold' href='register'><Link href={'/cadastro'} >Crie uma conta</Link></a></span>
                         </div>
                     </form>
                 </div>
