@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import background from '../assets/bg2.jpg';
 import Image from 'next/image';
 import { Header } from "./Header";
-import {BiUser} from 'react-icons/bi';
+import {MdOutlineEmail} from 'react-icons/md'
 import {AiOutlineLock} from 'react-icons/ai';
 import { loginUser } from '@/lib/api';
 import { useRouter } from 'next/router'; // Importe o useRouter aqui
@@ -50,7 +50,7 @@ export function Login() {
                         type="email" value={email} onChange={(e) => setEmail(e.target.value)}
                         className="peer border-gray-300 rounded-md px-0 py-2.3 w-72 block text-sm text-white bg-transparent border-0 border-b-2 appearance-none focus:outline-none focus:ring-0 focus:border-[#4BC3B7]" placeholder=" " />
                     <label className="absolute text-sm text-white duration-300 transform -translate-y-6 scale-75 top-3 origin-[0] peer-focus:left-0 peer-focus:text-white peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">E-mail</label>
-                    <BiUser className='absolute top-4 right-4 text-white'/>
+                    <MdOutlineEmail className='absolute top-4 right-4 text-white'/>
                 </div>
                 <div className="relative my-4">
                     <input 

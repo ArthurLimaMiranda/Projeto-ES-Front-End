@@ -300,13 +300,6 @@ export function DashClientes(){
                 )}
               </form>
             </div>
-            <button 
-                    title="Editar"
-                    type="submit" 
-                    className={`leading-none w-full border-none outline-none rounded-xl bg-generic-tittleButton p-4 text-generic-bgLight font-bold cursor-pointer mb-6 shadow-button hover:shadow-button-hover-focus focus:shadow-button-hover-focus`}
-                  >
-                    Login
-                  </button>
             </div>
           </div>
 
